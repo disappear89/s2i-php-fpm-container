@@ -6,6 +6,32 @@ set -e
 echo "---> Installing application source..."
 mv /tmp/src/* ./
 
+if [ -f prophet.json ]; then
+  echo "Found 'prophet.json', building dependencies using prophet.phar... "
+
+  RETRIES=6
+  for ((i=0; i<$RETRIES; i++)); do
+    echo "Downloading $PROPHET_PHAR_URL for ${PROPHET_PUBLISH_TARGET}, attempt $((i+1))/$RETRIES"
+    curl -o prophet.phar $PROPHET_PHAR_URL && chmod +x prophet.phar && break
+    sleep 10
+  done
+
+  ./prophet.phar package -n
+  ./prophet.phar publish -t ${PROPHET_PUBLISH_TARGET}
+
+  echo "Finished prophet build and asset upload to ${PROPHET_PUBLISH_TARGET} => move prophet assets to server root"
+
+  mkdir move
+  mv * .* move/ || echo "Temp dir created"
+
+  mv move/.prophet/.sources/* move/.prophet/.sources/.* . || echo "Prophet sources moved"
+  mv move/.prophet/api-controller/composer.json .
+
+  rm -rf move
+
+fi
+
+
 if [ -f composer.json ]; then
   echo "Found 'composer.json', installing dependencies using composer.phar... "
 
@@ -34,9 +60,12 @@ if [ -f composer.json ]; then
   fi
 
   # Change the repo mirror if provided
-  ls -alh
   if [ -n "$COMPOSER_MIRROR" ]; then
     ./composer.phar config -g repositories.packagist composer $COMPOSER_MIRROR
+  fi
+
+  if [ "$COMPOSER_ALLOW_HTTP" = true ]; then
+    ./composer.phar config -g secure-http false
   fi
 
   # Install App dependencies using Composer
@@ -48,4 +77,4 @@ if [ -f composer.json ]; then
 fi
 
 # Fix source directory permissions
-fix-permissions ./
+bash fix-permissions ./
