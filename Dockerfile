@@ -22,7 +22,8 @@ RUN mkdir -p ${HOME} && \
     adduser -u 1001 -G www-data -h ${HOME} -S -D default && \
     chown -R 1001:0 /var/www/html && \
     apk add --no-cache --update bash curl wget \
-        tar unzip findutils git && \
+        tar unzip findutils git ca-certificates && \
+    update-ca-certificates --fresh && \
     rm -rf /var/cache/apk/*
 
 # Copy executable utilities
