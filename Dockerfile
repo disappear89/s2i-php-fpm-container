@@ -32,6 +32,9 @@ COPY ./bin/ /usr/bin/
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH
 
+# Copy default php.ini
+COPY ./usr/local/etc/php/ /usr/local/etc/php/
+
 # Directory with the sources is set as the working directory so all STI scripts
 # can execute relative to this path
 WORKDIR ${HOME}
