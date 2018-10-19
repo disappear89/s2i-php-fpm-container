@@ -1,4 +1,4 @@
-FROM php:7.2.11-fpm-alpine3.8
+FROM netzmarkt/php-fpm:7.2_38
 
 MAINTAINER Thomas Tischner <tti@netzmarkt.de>
 
@@ -15,19 +15,21 @@ ENV \
   STI_SCRIPTS_PATH=/usr/libexec/s2i \
   # HOME is not set by default, but is needed by some applications
   HOME=/var/www/html \
-  PATH=/var/www/html/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:$PATH \
-  REFRESHED_AT=2016-04-7T14:27
+  PATH=/var/www/html/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:$PATH
 
 RUN mkdir -p ${HOME} && \
     mkdir -p /usr/libexec/s2i && \
-    adduser -s /bin/sh -u 1001 -G www-data -h ${HOME} -S -D default && \
+    adduser -u 1001 -G www-data -h ${HOME} -S -D default && \
     chown -R 1001:0 /var/www/html && \
     apk add --no-cache --update bash curl wget \
-        tar unzip findutils git && \ \
+        tar unzip findutils git && \
     rm -rf /var/cache/apk/*
 
 # Copy executable utilities
 COPY ./bin/ /usr/bin/
+
+# Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
+COPY ./s2i/bin/ $STI_SCRIPTS_PATH
 
 # Directory with the sources is set as the working directory so all STI scripts
 # can execute relative to this path
