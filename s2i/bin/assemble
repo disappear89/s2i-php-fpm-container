@@ -31,8 +31,6 @@ if [ -f prophet.json ]; then
 
 fi
 
-sleep 60
-
 if [ -f composer.json ]; then
   echo "Found 'composer.json', installing dependencies using composer.phar... "
 
