@@ -1,6 +1,6 @@
-FROM alpine:3.4
+FROM php:7.2.11-fpm-alpine3.8
 
-MAINTAINER Paul Schoenfelder <paulschoenfelder@gmail.com>
+MAINTAINER Thomas Tischner <tti@netzmarkt.de>
 
 LABEL \
   # Location of the STI scripts inside the image
@@ -14,22 +14,16 @@ ENV \
   # Path to be used in other layers to place s2i scripts into
   STI_SCRIPTS_PATH=/usr/libexec/s2i \
   # HOME is not set by default, but is needed by some applications
-  HOME=/opt/app-root/src \
-  PATH=/opt/app-root/src/bin:/opt/app-root/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:$PATH \
+  HOME=/var/www/html \
+  PATH=/var/www/html/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:$PATH \
   REFRESHED_AT=2016-04-7T14:27
 
 RUN mkdir -p ${HOME} && \
     mkdir -p /usr/libexec/s2i && \
-    adduser -s /bin/sh -u 1001 -G root -h ${HOME} -S -D default && \
-    chown -R 1001:0 /opt/app-root && \
-    echo 'http://dl-4.alpinelinux.org/alpine/3.4/community' >> /etc/apk/repositories && \
-    apk -U upgrade && \
+    adduser -s /bin/sh -u 1001 -G www-data -h ${HOME} -S -D default && \
+    chown -R 1001:0 /var/www/html && \
     apk add --no-cache --update bash curl wget \
-        tar unzip findutils git gettext gdb lsof patch \
-        libcurl libxml2 libxslt openssl-dev zlib-dev \
-        make automake gcc g++ binutils-gold linux-headers paxctl libgcc libstdc++ \
-        python gnupg ncurses-libs ca-certificates && \
-    update-ca-certificates --fresh && \
+        tar unzip findutils git && \ \
     rm -rf /var/cache/apk/*
 
 # Copy executable utilities
@@ -38,5 +32,7 @@ COPY ./bin/ /usr/bin/
 # Directory with the sources is set as the working directory so all STI scripts
 # can execute relative to this path
 WORKDIR ${HOME}
+
+USER 1001
 
 CMD ["base-usage"]
