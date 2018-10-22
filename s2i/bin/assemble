@@ -10,7 +10,6 @@ if [ -f /tmp/src/prophet.json ]; then
 
   echo "Create temporary build dir"
 
-  mkdir build
   mv /tmp/src build
   cd build
 
