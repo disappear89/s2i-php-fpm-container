@@ -13,27 +13,27 @@ if [ -f /tmp/src/prophet.json ]; then
   mv /tmp/src build
   cd build
 
-  if [ -z "$PROD" ]; then
-
-    echo "No prod deployment detected falling back to version dev-master"
-    cat composer.json | jq '. + {"version":"master-dev"}' > composer_version.json
-    mv composer_version.json composer.json
-    echo "Following composer.json was generated:"
-    echo "--------------------------------------"
-    cat composer.json
-    echo "--------------------------------------"
-
-  elif [ "$PROD" = true ]; then
-
-    echo "Prod deployment detected falling back to version 1.0.0"
-    cat composer.json | jq '. + {"version":"1.0.0"}' > composer_version.json
-    mv composer_version.json composer.json
-    echo "Following composer.json was generated:"
-    echo "--------------------------------------"
-    cat composer.json
-    echo "--------------------------------------"
-
-  fi
+#  if [ -z "$PROD" ]; then
+#
+#    echo "No prod deployment detected falling back to version dev-master"
+#    cat composer.json | jq '. + {"version":"master-dev"}' > composer_version.json
+#    mv composer_version.json composer.json
+#    echo "Following composer.json was generated:"
+#    echo "--------------------------------------"
+#    cat composer.json
+#    echo "--------------------------------------"
+#
+#  elif [ "$PROD" = true ]; then
+#
+#    echo "Prod deployment detected falling back to version 1.0.0"
+#    cat composer.json | jq '. + {"version":"1.0.0"}' > composer_version.json
+#    mv composer_version.json composer.json
+#    echo "Following composer.json was generated:"
+#    echo "--------------------------------------"
+#    cat composer.json
+#    echo "--------------------------------------"
+#
+#  fi
 
   RETRIES=6
   for ((i=0; i<$RETRIES; i++)); do
