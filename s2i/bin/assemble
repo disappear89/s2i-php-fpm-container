@@ -12,12 +12,12 @@ if [ -f prophet.json ]; then
   RETRIES=6
   for ((i=0; i<$RETRIES; i++)); do
     echo "Downloading $PROPHET_PHAR_URL for ${PROPHET_PUBLISH_TARGET}, attempt $((i+1))/$RETRIES"
-    curl -o prophet.phar $PROPHET_PHAR_URL && chmod +x prophet.phar && break
+    curl -o /tmp/prophet.phar $PROPHET_PHAR_URL && chmod +x /tmp/prophet.phar && break
     sleep 10
   done
 
-  ./prophet.phar package -n
-  ./prophet.phar publish -t ${PROPHET_PUBLISH_TARGET}
+  /tmp/prophet.phar package -n
+  /tmp/prophet.phar publish -t ${PROPHET_PUBLISH_TARGET}
 
   echo "Finished prophet build and asset upload to ${PROPHET_PUBLISH_TARGET} => move prophet assets to server root"
 
