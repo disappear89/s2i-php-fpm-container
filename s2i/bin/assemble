@@ -8,6 +8,8 @@ echo "---> Installing application source..."
 if [ -f /tmp/src/prophet.json ]; then
   echo "Found 'prophet.json', building dependencies using prophet.phar... "
 
+  echo "Create temporary build dir"
+
   mkdir build
   mv /tmp/src build
   cd build
